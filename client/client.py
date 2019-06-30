@@ -18,6 +18,7 @@ import cv2
 import zmq
 import base64
 import numpy as np
+import os
 
 color_bg='#000000'        #Set background color
 color_text='#E1F5FE'      #Set text color
@@ -262,7 +263,9 @@ def loop():                       #GUI
         var_x_scan = tk.IntVar()  #Scan range value saved in a IntVar
         var_x_scan.set(2)         #Set a default scan value
 
-        logo =tk.PhotoImage(file = 'logo.png')         #Define the picture of logo,but only supports '.png' and '.gif'
+        script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+        logo_file_path = os.path.join(script_dir, 'logo.png')
+        logo =tk.PhotoImage(file = logo_file_path)         #Define the picture of logo,but only supports '.png' and '.gif'
         l_logo=tk.Label(root,image = logo,bg=color_bg) #Set a label to show the logo picture
         l_logo.place(x=30,y=13)                        #Place the Label in a right position
 
@@ -308,12 +311,12 @@ def loop():                       #GUI
         BtnSR3 = tk.Button(root, width=15, text='Sphinx SR',fg=color_text,bg=color_btn,relief='ridge',command=call_SR3)
         BtnSR3.place(x=300,y=495)
 
-        E_C1.insert ( 0, 'Default:425' ) 
-        E_C2.insert ( 0, 'Default:425' ) 
-        E_M1.insert ( 0, 'Default:100' ) 
-        E_M2.insert ( 0, 'Default:100' )
-        E_T1.insert ( 0, 'Default:662' ) 
-        E_T2.insert ( 0, 'Default:295' )
+        E_C1.insert ( 0, '425' ) 
+        E_C2.insert ( 0, '425' ) 
+        E_M1.insert ( 0, '100' ) 
+        E_M2.insert ( 0, '100' )
+        E_T1.insert ( 0, '662' ) 
+        E_T2.insert ( 0, '295' )
 
         can_scan = tk.Canvas(root,bg=color_can,height=250,width=320,highlightthickness=0) #define a canvas
         can_scan.place(x=440,y=330) #Place the canvas
@@ -351,12 +354,14 @@ def loop():                       #GUI
             tcpClicSock.send(('LDMset:%s'%E_T2.get()).encode())   #Get a speed value from IntVar and send it to the car
 
         def connect(event):       #Call this function to connect with the server
+            print("Calling connect()")
             if ip_stu == 1:
                 sc=thread.Thread(target=socket_connect) #Define a thread for connection
                 sc.setDaemon(True)                      #'True' means it is a front thread,it would close when the mainloop() closes
                 sc.start()                              #Thread starts
 
         def connect_2():          #Call this function to connect with the server
+            print("Calling connect_2()")
             if ip_stu == 1:
                 sc=thread.Thread(target=socket_connect) #Define a thread for connection
                 sc.setDaemon(True)                      #'True' means it is a front thread,it would close when the mainloop() closes
@@ -392,12 +397,13 @@ def loop():                       #GUI
                         l_ip_4.config(text='Connected')
                         l_ip_4.config(bg='#558B2F')
 
-                        replace_num('IP:',ip_adr)
+                        #replace_num('IP:',ip_adr)
                         E1.config(state='disabled')      #Disable the Entry
                         Btn14.config(state='disabled')   #Disable the Entry
                     
                         ip_stu=0                         #'0' means connected
                     
+                        #Begin Code Block 'stuff'
                         at=thread.Thread(target=code_receive) #Define a thread for data receiving
                         at.setDaemon(True)                    #'True' means it is a front thread,it would close when the mainloop() closes
                         at.start()                            #Thread starts
@@ -411,7 +417,9 @@ def loop():                       #GUI
                         print('Video Connected')
                         video_thread.start()                            #Thread starts
 
-                        ipaddr=tcpClicSock.getsockname()[0]
+                        ipaddr=tcpClicSock.getsockname()[0]             
+                        #End Code Block 'stuff'
+
                         break
                     else:
                         break
