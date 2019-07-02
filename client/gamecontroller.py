@@ -3,22 +3,73 @@ from __future__ import print_function
 from inputs import get_gamepad
 import time
 import math
-import client
 
-def read():
+last_motorSetting = 0
+last_PWMSetting = [0,0,0,0,0,0,0,0,0,0,0,0]  #12 channels
+
+#TODO: Move this to server.py
+def setSteer(min, center, max, deflection):  #Calc PWM value from +/- percetage deflection and min, center and max PWM value
+    newPos = center
+    if deflection < 0:  # left/down/backwards
+        newPos = (center - min) * (deflection / 100)
+    elif deflection > 0:  # right/up/forwards       
+        newPos = (max - center) * (deflection / 100)
+    else:
+        newPos = center
+    return newPos
+
+def parseCommand(command):
+    #testing only
+    try:
+        parts = str.split(command,":")
+        print(parts[0] + ":::" + parts[1])
+    except:
+        print("Ooops")
+        return 
+
+def getPWM_Command(channel, event_state ):
+    global last_PWMSetting
+    command = ""
+    deflection = calcPercentDeflection(event_state)
+    if deflection != last_PWMSetting[channel]:
+        command = "pwm_set:" + str(channel) + ":" + str(deflection)
+        last_PWMSetting[channel] = deflection
+    return command
+
+def read(cb):
     """Just print out some event infomation when the gamepad is used."""
+    try:
+        events = get_gamepad()  #test game pad exists
+    except:
+        print("Unable to connect to gamepad.  Use WASD controls instead.")
+        return
+        
     while 1:
         events = get_gamepad()
         for event in events:
             if event.ev_type == "Absolute":
                 if event.code == "ABS_X":
-                    printIfNotZero("Steer",calcPercentDeflection(event.state))
+                    # STEERING channel 2
+                    cmd = getPWM_Command(2, event.state)
+                    if cmd != "":
+                        cb(cmd)  # call back
                 elif event.code == "ABS_Y":
-                    printIfNotZero("Motor",calcPercentDeflection(event.state))
+                    global last_motorSetting
+                    motorSetting = calcPercentDeflection(event.state)
+                    if motorSetting != last_motorSetting:
+                        cmd = "motor_set:" + str(motorSetting)
+                        last_motorSetting = motorSetting
+                        cb(cmd)  # call back
                 elif event.code == "ABS_RY":
-                    printIfNotZero("Camera Tilt",calcPercentDeflection(event.state))                            
+                    # Camera TILT channel 0
+                    cmd = getPWM_Command(0, event.state)
+                    if cmd != "":
+                        cb(cmd)  # call back                    
                 elif event.code == "ABS_RX":
-                    printIfNotZero("Camera Pan",calcPercentDeflection(event.state))
+                    # Camera PAN channel 1
+                    cmd = getPWM_Command(1, event.state)
+                    if cmd != "":
+                        cb(cmd)  # call back       
                 elif event.code == "ABS_HAT0X":
                     print(event.code, event.state)                      
                 elif event.code == "ABS_HAT0Y":
@@ -26,7 +77,6 @@ def read():
             elif (event.ev_type == "Key" and event.state==1):  # ignoring button up, so this is a momentary switch
                 if event.code == "BTN_WEST":
                     print("X")
-                    client.scan(event)
                 elif event.code == "BTN_EAST":
                     print("B")
                 elif event.code == "BTN_NORTH":
@@ -35,7 +85,6 @@ def read():
                     print("A")
                 elif event.code == "BTN_TL":
                     print("Button-Top-Left")    
-                    #lights_ON(event)
                 elif event.code == "BTN_TR":
                     print("Button-Top-Right")                                                                                        
                 elif event.code == "BTN_START":
@@ -59,6 +108,8 @@ def calcPercentDeflection(value):
         perct= 0
     return round(perct,0)
 
+def writeoutput(cmd):
+    print(cmd)
+
 if __name__ == "__main__":
-    read()
-#read()
+    read(writeoutput)

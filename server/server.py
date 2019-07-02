@@ -598,6 +598,10 @@ def run():                   #Main loop
             motor.motor_right(status,backward,right_spd*spd_ad)
             colorWipe(strip, Color(0,0,255))
 
+        elif 'motor_set' in data:
+            tcpCliSock.send('1'.encode())
+            # e.g "motor_set:forward:500         
+
         elif 'l_up' in data:                   #Camera look up
             if vtr_mid< look_up_max:
                 vtr_mid+=turn_speed

@@ -24,6 +24,8 @@ from inputs import get_gamepad
 import time
 import math
 import client
+import gamecontroller
+
 
 color_bg='#000000'        #Set background color
 color_text='#E1F5FE'      #Set text color
@@ -50,7 +52,6 @@ c_r_stu=0
 b_l_stu=0
 b_r_stu=0
 
-l_stu=0
 r_stu=0
 
 BtnIP=''
@@ -64,76 +65,16 @@ findline_status = 0
 
 ipcon=0
 SR_mode=0
-                                         
 
-def printIfNotZero(command,perct):
-    if perct != 0:
-        print(command,perct) 
+def command_cb(command):
+    print("TCP:" + command)
+    #tcpClicSock.send(('backward').encode())
 
-def calcPercentDeflection(value):
-    # return percentage deflection +/-, ignoring small deflections!
-    min_deflection = 5000
-    perct = 0
-    if (value < (min_deflection * -1)):
-        perct =  ((value + min_deflection) * 100) / (32768- min_deflection)
-    elif (value > min_deflection):
-        perct = ((value - min_deflection) * 100) / (32767 - min_deflection)
-    else:        
-        perct= 0
-    return round(perct,0)
+controller_thread=thread.Thread(target=gamecontroller.read(command_cb)) #Define a thread for data receiving
+controller_thread.setDaemon(True)                    #'True' means it is a front thread,it would close when the mainloop() closes
+print('Reading Controller')
+controller_thread.start()                            #Thread starts    
 
-#Code added to read from game controller
-def read_gamecontroller():
-    print("game controller connected")
-    while 1:
-        events = get_gamepad()
-        for event in events:
-            if event.ev_type == "Absolute":
-                if event.code == "ABS_X":
-                    printIfNotZero("Steer",calcPercentDeflection(event.state))
-                elif event.code == "ABS_Y":
-                    printIfNotZero("Motor",calcPercentDeflection(event.state))
-                elif event.code == "ABS_RY":
-                    tilt = calcPercentDeflection(event.state)
-                    printIfNotZero("Camera Tilt",calcPercentDeflection(event.state))   
-                    printIfNotZero("Camera Pan",tilt)
-                    if tilt > 1:
-                        call_look_up(event)                   
-                    elif tilt < 1:
-                        call_look_down(event)
-                elif event.code == "ABS_RX":
-                    pan = calcPercentDeflection(event.state)
-                    printIfNotZero("Camera Pan",pan)
-                    if pan > 1:
-                        call_look_right(event)                    
-                    elif pan < 1:
-                        call_look_left(event) 
-                elif event.code == "ABS_HAT0X":
-                    print(event.code, event.state)                      
-                elif event.code == "ABS_HAT0Y":
-                    print(event.code, event.state)                                             
-            elif (event.ev_type == "Key" and event.state==1):  # ignoring button up, so this is a momentary switch
-                if event.code == "BTN_WEST":
-                    print("X")
-                    scan(event)
-                elif event.code == "BTN_EAST":
-                    print("B")
-                    call_Stop(event)                    
-                elif event.code == "BTN_NORTH":
-                    print("Y")
-                elif event.code == "BTN_SOUTH":
-                    print("A")
-                elif event.code == "BTN_TL":
-                    print("Button-Top-Left")    
-                    lights_ON(event)
-                elif event.code == "BTN_TR":
-                    print("Button-Top-Right")                                                                                        
-                elif event.code == "BTN_START":
-                    print("Button-Start")    
-                    call_Stop(event)
-                elif event.code == "BTN_SELECT":
-                    print("Button-Select")
-                    call_ahead(event)    
 
 
 def video_show():
@@ -493,10 +434,7 @@ def loop():                       #GUI
                         print('Video Connected')
                         video_thread.start()                            #Thread starts
 
-                        controller_thread=thread.Thread(target=read_gamecontroller) #Define a thread for data receiving
-                        controller_thread.setDaemon(True)                    #'True' means it is a front thread,it would close when the mainloop() closes
-                        print('Reading Controller')
-                        controller_thread.start()                            #Thread starts                        
+                    
 
                         ipaddr=tcpClicSock.getsockname()[0]             
                         #End Code Block 'stuff'
