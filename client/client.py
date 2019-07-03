@@ -69,6 +69,8 @@ SR_mode=0
 def command_cb(command):
     if command== "lights_ON":
         lights_ON(None)
+    elif command == "stop":
+        call_stop(None)
     else:       
         print("TCP:" + command)
         tcpClicSock.send((command).encode())

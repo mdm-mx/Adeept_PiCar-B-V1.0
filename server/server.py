@@ -484,7 +484,6 @@ def run():                   #Main loop
     while True: 
         data = ''
         data = tcpCliSock.recv(BUFSIZ).decode()
-        print(data)
         if not data:
             continue
         elif 'exit' in data:
@@ -501,7 +500,7 @@ def run():                   #Main loop
             str_send_1=str_index.join(str_list_1)+' '
             tcpCliSock.sendall((str(str_send_1)).encode())   #Send Data
             tcpCliSock.send('finished'.encode())        #Sending 'finished' tell the client to stop receiving the list of dis_can
-
+            print("scan")
         elif 'scan_rev' in data:
             dis_can=scan_rev()                     #Start Scanning
             str_list_1=dis_can                 #Divide the list to make it samller to send 
@@ -539,6 +538,7 @@ def run():                   #Main loop
             turn.camera_turn(new_ET2)
 
         elif 'stop' in data:                   #When server receive "stop" from client,car stops moving
+            print(data)
             tcpCliSock.send('9'.encode())
             setup()
             motor.motorStop()
@@ -658,7 +658,7 @@ def run():                   #Main loop
             motor.motorStop()
             led.both_off()
             turn.middle()
-        
+            print(data)
         elif 'auto' in data:                   #When server receive "auto" from client,start Auto Mode
             if auto_status == 0:
                 tcpCliSock.send('0'.encode())
