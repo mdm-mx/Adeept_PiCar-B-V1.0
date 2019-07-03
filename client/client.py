@@ -68,10 +68,8 @@ SR_mode=0
 
 def command_cb(command):
     print("TCP:" + command)
-    try:
-        tcpClicSock.send((command).encode())
-    except:
-        print("Error in command_cb")    
+    tcpClicSock.send((command).encode())
+    time.sleep(0.05)
 
 def video_show():
     while True:

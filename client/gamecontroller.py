@@ -88,7 +88,7 @@ def calcPercentDeflection(value):
         perct = ((value - min_deflection) * 100) / (32767 - min_deflection)
     else:        
         perct= 0
-    return round(perct,0)
+    return int(float(perct))
 
 def writeoutput(cmd):
     print(cmd)
