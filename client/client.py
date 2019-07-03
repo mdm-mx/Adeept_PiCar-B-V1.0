@@ -67,9 +67,14 @@ ipcon=0
 SR_mode=0
 
 def command_cb(command):
-    print("TCP:" + command)
-    tcpClicSock.send((command).encode())
-    time.sleep(0.05)
+    if command== "lights_ON":
+        lights_ON()
+    elif command == "call_opencv":
+        call_opencv()
+    else:       
+        print("TCP:" + command)
+        tcpClicSock.send((command).encode())
+        time.sleep(0.05)
 
 def video_show():
     while True:

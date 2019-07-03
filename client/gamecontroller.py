@@ -39,7 +39,7 @@ def read(cb):
                     if motorSetting != last_motorSetting:
                         cmd = "motor_set:" + str(motorSetting)
                         last_motorSetting = motorSetting
-                        cb(cmd)  # call back
+                        cb(cmd)  # call back           
                 elif event.code == "ABS_RY":
                     # Camera TILT channel 0
                     cmd = getPWM_Command(0, event.state)
@@ -59,24 +59,19 @@ def read(cb):
                     print("X")
                     cb("scan")
                 elif event.code == "BTN_EAST":
-                    print("B")
                     cb("stop")
                 elif event.code == "BTN_NORTH":
                     print("Y")
                 elif event.code == "BTN_SOUTH":
                     print("A")
                 elif event.code == "BTN_TL":
-                    print("Button-Top-Left")    
+                    cb("lights_ON")  # call back      
                 elif event.code == "BTN_TR":
                     print("Button-Top-Right")                                                                                        
                 elif event.code == "BTN_START":
-                    print("Button-Start")    
+                    cb("middle") 
                 elif event.code == "BTN_SELECT":
-                    cb("home")                                        
-
-def printIfNotZero(command,perct):
-    if perct != 0:
-        print(command,perct) 
+                    cb("ahead")                                        
 
 def calcPercentDeflection(value):
     # return percentage deflection +/-, ignoring small deflections!
@@ -90,7 +85,7 @@ def calcPercentDeflection(value):
         perct= 0
     return int(float(perct))
 
-def writeoutput(cmd):
+def writeoutput(cmd):  #testing stub for callback function; just print command.
     print(cmd)
 
 if __name__ == "__main__":
