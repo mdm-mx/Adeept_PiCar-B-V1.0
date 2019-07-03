@@ -72,7 +72,7 @@ def command_cb(command):
     else:       
         print("TCP:" + command)
         tcpClicSock.send((command).encode())
-        #time.sleep(0.02)
+        time.sleep(0.5)
 
 def video_show():
     while True:

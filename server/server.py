@@ -480,6 +480,7 @@ def run():                   #Main loop
     scan_threading.setDaemon(True)                              #'True' means it is a front thread,it would close when the mainloop() closes
     scan_threading.start()                                      #Thread starts
 
+    motor.motor_set(20)
 
     while True: 
         data = ''
@@ -600,7 +601,8 @@ def run():                   #Main loop
             colorWipe(strip, Color(0,0,255))
 
         elif 'motor_set' in data:
-            led.both_off()
+            motor.motor_set(20)
+            #led.both_off()
             tcpCliSock.send('1'.encode())
             # e.g motor_set:50, motor_set:-50
             parts = str.split(data,":")
@@ -609,7 +611,7 @@ def run():                   #Main loop
             print("motor_set:" + str(deflection))
 
         elif 'pwm_set' in data:
-            led.both_on()
+            #led.both_on()
             tcpCliSock.send('1'.encode())
             parts = str.split(data,":")
             channel = parts[1]
