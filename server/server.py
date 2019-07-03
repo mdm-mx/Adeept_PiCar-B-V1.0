@@ -484,6 +484,7 @@ def run():                   #Main loop
     while True: 
         data = ''
         data = tcpCliSock.recv(BUFSIZ).decode()
+        print(data)
         if not data:
             continue
         elif 'exit' in data:
