@@ -71,7 +71,7 @@ def motor_set(deflection):
 			GPIO.output(Motor_A_Pin2, GPIO.HIGH)
 			GPIO.output(Motor_B_Pin1, GPIO.LOW)
 			GPIO.output(Motor_B_Pin2, GPIO.HIGH)
-			pwm_A.start(100)
+			pwm_A.start(0)
 			pwm_A.ChangeDutyCycle(abs(deflectionNum) / 100)			
 			pwm_B.start(0)
 			pwm_B.ChangeDutyCycle(abs(deflectionNum) / 100)
