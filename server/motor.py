@@ -52,7 +52,7 @@ def motorStop():#Motor stops
 def motor_set(deflection):
 	global  pwm_A
 	global  pwm_B
-
+	print("motor_set:" + str(deflection))
 	deflectionNum = int(deflection)
 	if deflection == 0: # stop
 		motorStop()
