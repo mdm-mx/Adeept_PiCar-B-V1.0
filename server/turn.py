@@ -39,6 +39,11 @@ turn_right_max  = num_import_int('turn_right_max:')
 turn_left_max   = num_import_int('turn_left_max:')
 turn_middle     = num_import_int('turn_middle:')
 
+look_up_max    = num_import_int('look_up_max:')
+look_down_max  = num_import_int('look_down_max:')
+look_right_max = num_import_int('look_right_max:')
+look_left_max  = num_import_int('look_left_max:')
+
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
 
@@ -69,3 +74,22 @@ def camera_turn(vtr_mid):
 def ahead():
 	pwm.set_pwm(1, 0, hoz_mid_orig)
 	pwm.set_pwm(0, 0, vtr_mid_orig)
+
+def set_pwm(channel, deflection):
+    # set any PWM channel based on % deflection +/- and min/max position value
+    if channel == 0:
+        pwm.set_pwm(channel, 0, getSteer(look_down_max, vtr_mid_orig, look_up_max, deflection ))    
+    elif channel == 1:
+        pwm.set_pwm(channel, 0, getSteer(look_left_max, hoz_mid_orig, look_right_max, deflection))            
+    elif channel == 2:
+        pwm.set_pwm(channel, 0, getSteer(turn_left_max, turn_middle, turn_right_max, deflection))     
+
+def getSteer(min, center, max, deflection):  #Calc PWM value from +/- percetage deflection and min, center and max PWM value
+    newPos = center
+    if deflection < 0:  # left/down
+        newPos = (center - min) * (deflection / 100)
+    elif deflection > 0:  # right/up      
+        newPos = (max - center) * (deflection / 100)
+    else:
+        newPos = center
+    return newPos    
