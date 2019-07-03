@@ -57,8 +57,10 @@ def read(cb):
             elif (event.ev_type == "Key" and event.state==1):  # ignoring button up, so this is a momentary switch
                 if event.code == "BTN_WEST":
                     print("X")
+                    cb("scan")
                 elif event.code == "BTN_EAST":
                     print("B")
+                    cb("stop")
                 elif event.code == "BTN_NORTH":
                     print("Y")
                 elif event.code == "BTN_SOUTH":
@@ -70,7 +72,7 @@ def read(cb):
                 elif event.code == "BTN_START":
                     print("Button-Start")    
                 elif event.code == "BTN_SELECT":
-                    print("Button-Select")                                            
+                    cb("home")                                        
 
 def printIfNotZero(command,perct):
     if perct != 0:

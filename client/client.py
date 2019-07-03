@@ -69,7 +69,7 @@ SR_mode=0
 def command_cb(command):
     print("TCP:" + command)
     try:
-        tcpClicSock.send(('backward').encode())
+        tcpClicSock.send((command).encode())
     except:
         print("Error in command_cb")    
 

@@ -52,27 +52,29 @@ def motorStop():#Motor stops
 def motor_set(deflection):
 	global  pwm_A
 	global  pwm_B
+
+	deflectionNum = int(deflection)
 	if deflection == 0: # stop
 		motorStop()
 	else:
-		if deflection > 0:  #forward
+		if deflectionNum > 0:  #forward
 			GPIO.output(Motor_A_Pin1, GPIO.HIGH)
 			GPIO.output(Motor_A_Pin2, GPIO.LOW)			
 			GPIO.output(Motor_B_Pin1, GPIO.HIGH)
 			GPIO.output(Motor_B_Pin2, GPIO.LOW)
 			pwm_A.start(100)
-			pwm_A.ChangeDutyCycle(abs(deflection) / 100)
+			pwm_A.ChangeDutyCycle(abs(deflectionNum) / 100)
 			pwm_B.start(100)
-			pwm_B.ChangeDutyCycle(abs(deflection) / 100)			
-		elif deflection < 0:  #backward
+			pwm_B.ChangeDutyCycle(abs(deflectionNum) / 100)			
+		elif deflectionNum < 0:  #backward
 			GPIO.output(Motor_A_Pin1, GPIO.LOW)
 			GPIO.output(Motor_A_Pin2, GPIO.HIGH)
 			GPIO.output(Motor_B_Pin1, GPIO.LOW)
 			GPIO.output(Motor_B_Pin2, GPIO.HIGH)
 			pwm_A.start(100)
-			pwm_A.ChangeDutyCycle(abs(deflection) / 100)			
+			pwm_A.ChangeDutyCycle(abs(deflectionNum) / 100)			
 			pwm_B.start(0)
-			pwm_B.ChangeDutyCycle(abs(deflection) / 100)
+			pwm_B.ChangeDutyCycle(abs(deflectionNum) / 100)
 
 
 def motor_right(status, direction, speed):#Motor 2 positive and negative rotation
