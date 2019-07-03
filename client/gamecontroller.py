@@ -59,7 +59,7 @@ def read(cb):
                     print("X")
                     cb("scan")
                 elif event.code == "BTN_EAST":
-                    cb("stop")
+                    cb("Stop")
                 elif event.code == "BTN_NORTH":
                     print("Y")
                 elif event.code == "BTN_SOUTH":

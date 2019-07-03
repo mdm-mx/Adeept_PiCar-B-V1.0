@@ -600,6 +600,7 @@ def run():                   #Main loop
             colorWipe(strip, Color(0,0,255))
 
         elif 'motor_set' in data:
+            led.both_off()
             tcpCliSock.send('1'.encode())
             # e.g motor_set:50, motor_set:-50
             parts = str.split(data,":")
@@ -608,6 +609,7 @@ def run():                   #Main loop
             print("motor_set:" + str(deflection))
 
         elif 'pwm_set' in data:
+            led.both_on()
             tcpCliSock.send('1'.encode())
             parts = str.split(data,":")
             channel = parts[1]
