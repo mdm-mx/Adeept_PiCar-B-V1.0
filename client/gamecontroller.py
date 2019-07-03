@@ -7,26 +7,6 @@ import math
 last_motorSetting = 0
 last_PWMSetting = [0,0,0,0,0,0,0,0,0,0,0,0]  #12 channels
 
-#TODO: Move this to server.py
-def setSteer(min, center, max, deflection):  #Calc PWM value from +/- percetage deflection and min, center and max PWM value
-    newPos = center
-    if deflection < 0:  # left/down/backwards
-        newPos = (center - min) * (deflection / 100)
-    elif deflection > 0:  # right/up/forwards       
-        newPos = (max - center) * (deflection / 100)
-    else:
-        newPos = center
-    return newPos
-
-def parseCommand(command):
-    #testing only
-    try:
-        parts = str.split(command,":")
-        print(parts[0] + ":::" + parts[1])
-    except:
-        print("Ooops")
-        return 
-
 def getPWM_Command(channel, event_state ):
     global last_PWMSetting
     command = ""

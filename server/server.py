@@ -604,6 +604,7 @@ def run():                   #Main loop
             parts = str.split(data,":")
             deflection = parts[1]
             motor.motor_set(deflection)         
+            print("motor_set:" + deflection)
 
         elif 'pwm_set' in data:
             tcpCliSock.send('1'.encode())
@@ -611,6 +612,7 @@ def run():                   #Main loop
             channel = parts[1]
             deflection = parts[2]
             turn.set_pwm(channel, deflection)   
+            print("pwm_set:" + channel + ":" + deflection)
 
         elif 'l_up' in data:                   #Camera look up
             if vtr_mid< look_up_max:

@@ -68,14 +68,10 @@ SR_mode=0
 
 def command_cb(command):
     print("TCP:" + command)
-    #tcpClicSock.send(('backward').encode())
-
-controller_thread=thread.Thread(target=gamecontroller.read(command_cb)) #Define a thread for data receiving
-controller_thread.setDaemon(True)                    #'True' means it is a front thread,it would close when the mainloop() closes
-print('Reading Controller')
-controller_thread.start()                            #Thread starts    
-
-
+    try:
+        tcpClicSock.send(('backward').encode())
+    except:
+        print("Error in command_cb")    
 
 def video_show():
     while True:
@@ -434,7 +430,10 @@ def loop():                       #GUI
                         print('Video Connected')
                         video_thread.start()                            #Thread starts
 
-                    
+                        controller_thread=thread.Thread(target=gamecontroller.read(command_cb)) #Define a thread for data receiving
+                        controller_thread.setDaemon(True)                    #'True' means it is a front thread,it would close when the mainloop() closes
+                        print('Reading Controller')
+                        controller_thread.start()                            #Thread starts    
 
                         ipaddr=tcpClicSock.getsockname()[0]             
                         #End Code Block 'stuff'
