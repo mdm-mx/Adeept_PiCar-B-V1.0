@@ -93,4 +93,4 @@ def getSteer(min, center, max, deflection):  #Calc PWM value from +/- percetage 
         newPos = center + (max - center) * (abs(deflectionNum) / 100)
     else:
         newPos = center
-    return newPos    
+    return int(newPos)
