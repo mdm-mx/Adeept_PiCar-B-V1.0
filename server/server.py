@@ -611,15 +611,12 @@ def run():                   #Main loop
                 print("Error in motor_set")    
 
         elif 'pwm_set' in data:
-            try:
-                tcpCliSock.send('1'.encode())
-                parts = str.split(data,":")
-                channel = parts[1]
-                deflection = parts[2]
-                turn.set_pwm(channel, deflection)   
-                print("pwm_set:" + str(channel) + ":" + str(deflection))
-            except Exception:
-                print("Error in pwm_set" + str(Exception))  
+            tcpCliSock.send('1'.encode())
+            parts = str.split(data,":")
+            channel = parts[1]
+            deflection = parts[2]
+            turn.set_pwm(channel, deflection)   
+            print("pwm_set:" + str(channel) + ":" + str(deflection))
 
         elif 'l_up' in data:                   #Camera look up
             if vtr_mid< look_up_max:
