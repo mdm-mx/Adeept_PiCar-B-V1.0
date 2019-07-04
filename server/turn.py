@@ -85,12 +85,15 @@ def set_pwm(channel, deflection):
         pwm.set_pwm(2, 0, getSteer(turn_left_max, turn_middle, turn_right_max, deflection))     
 
 def getSteer(min, center, max, deflection):  #Calc PWM value from +/- percetage deflection and min, center and max PWM value
-    newPos = center
-    deflectionNum = int(deflection)
-    if deflectionNum < 0:  # left/down
-        newPos = center - (center - min) * (abs(deflectionNum) / 100)
-    elif deflectionNum:  # right/up 
-        newPos = center + (max - center) * (abs(deflectionNum) / 100)
-    else:
+    try:
         newPos = center
-    return int(newPos)
+        deflectionNum = int(deflection)
+        if deflectionNum < 0:  # left/down
+            newPos = center - (center - min) * (abs(deflectionNum) / 100)
+        elif deflectionNum:  # right/up 
+            newPos = center + (max - center) * (abs(deflectionNum) / 100)
+        else:
+            newPos = center
+        return int(newPos)
+    except:
+        return center
