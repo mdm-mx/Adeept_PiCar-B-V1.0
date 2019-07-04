@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: UTF-8 -*-
 # Product     : Raspberry PiCar-B
 # File name   : client.py
