@@ -605,7 +605,7 @@ def run():                   #Main loop
                 # e.g motor_set:50, motor_set:-50
                 parts = str.split(data,":")
                 deflection = parts[1]
-                motor.motor_set(int(deflection))
+                motor.motor_set(deflection)
                 print("motor_set:" + str(deflection))
             except:
                 print("Error in motor_set")    
