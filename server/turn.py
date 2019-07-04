@@ -78,11 +78,11 @@ def ahead():
 def set_pwm(channel, deflection):
     # set any PWM channel based on % deflection +/- and min/max position value
     if channel == "0":
-        pwm.set_pwm(channel, 0, getSteer(look_down_max, vtr_mid_orig, look_up_max, deflection))    
+        pwm.set_pwm(0, 0, getSteer(look_down_max, vtr_mid_orig, look_up_max, deflection))    
     elif channel == "1":
-        pwm.set_pwm(channel, 0, getSteer(look_left_max, hoz_mid_orig, look_right_max, deflection))            
+        pwm.set_pwm(1, 0, getSteer(look_left_max, hoz_mid_orig, look_right_max, deflection))            
     elif channel == "2":
-        pwm.set_pwm(channel, 0, getSteer(turn_left_max, turn_middle, turn_right_max, deflection))     
+        pwm.set_pwm(2, 0, getSteer(turn_left_max, turn_middle, turn_right_max, deflection))     
 
 def getSteer(min, center, max, deflection):  #Calc PWM value from +/- percetage deflection and min, center and max PWM value
     newPos = center
