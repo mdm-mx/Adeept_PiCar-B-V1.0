@@ -618,8 +618,8 @@ def run():                   #Main loop
                 deflection = parts[2]
                 turn.set_pwm(channel, deflection)   
                 print("pwm_set:" + str(channel) + ":" + str(deflection))
-            except:
-                print("Error in pwm_set")  
+            except Exception:
+                print("Error in pwm_set" + str(Exception))  
 
         elif 'l_up' in data:                   #Camera look up
             if vtr_mid< look_up_max:
