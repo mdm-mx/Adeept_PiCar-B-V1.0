@@ -35,9 +35,18 @@ def read(cb):
                         cb(cmd)  # call back
                 elif event.code == "ABS_Y":
                     global last_motorSetting
+                    cmd = ""
                     motorSetting = calcPercentDeflection(event.state)
                     if motorSetting != last_motorSetting:
-                        cmd = "motor_set:" + str(motorSetting)
+                        scaledSetting = divmod(motorSetting,10)[0]  #
+                        if scaledSetting < 0:
+                            scaledSetting -= 90
+                        elif scaledSetting > 0:
+                            scaledSetting += 90
+                        if scaledSetting == 0:
+                            cb("Stop")
+                        else:
+                            cmd = "motor_set:" + str(scaledSetting)
                         last_motorSetting = motorSetting
                         cb(cmd)  # call back           
                 elif event.code == "ABS_RY":
