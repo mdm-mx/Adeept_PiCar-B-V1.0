@@ -483,7 +483,7 @@ def run():                   #Main loop
     recv_buffer = ''
     while True: 
         data = ''
-        separater = '#
+        separater = '#'
         # look for /n separators in the receive buffer
         recv_buffer = recv_buffer + tcpCliSock.recv(BUFSIZ).decode()
         if not separater in recv_buffer:
