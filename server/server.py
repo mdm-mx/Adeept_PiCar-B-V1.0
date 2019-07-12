@@ -483,14 +483,15 @@ def run():                   #Main loop
     recv_buffer = ''
     while True: 
         data = ''
+        separater = '#
         # look for /n separators in the receive buffer
         recv_buffer = recv_buffer + tcpCliSock.recv(BUFSIZ).decode()
-        if not '/n' in recv_buffer:
+        if not separater in recv_buffer:
             continue
-        commands = recv_buffer.split("/n")
+        commands = recv_buffer.split(separater)
         data = commands[0]
         commands.pop(0)  #remove command we are about to execute
-        separater = '/n'
+        
         recv_buffer = separater.join(commands)  # fix the receive buffer in an inefficeint way  :)
         
         # now process the first command.

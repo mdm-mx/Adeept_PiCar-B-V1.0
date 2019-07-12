@@ -74,87 +74,87 @@ def call_forward(event):         #When this function is called,client commands t
     global c_f_stu
     if c_f_stu == 0:
         if motor_rev == 0:
-            tcpClicSock.send(('forward').encode())
+            sendCommand(('forward').encode())
         else:
-            tcpClicSock.send(('backward').encode())
+            sendCommand(('backward').encode())
         c_f_stu=1
 
 def call_back(event):            #When this function is called,client commands the car to move backward
     global c_b_stu 
     if c_b_stu == 0:
         if motor_rev == 0:
-            tcpClicSock.send(('backward').encode())
+            sendCommand(('backward').encode())
         else:
-            tcpClicSock.send(('forward').encode())
+            sendCommand(('forward').encode())
         c_b_stu=1
 
 def call_stop(event):            #When this function is called,client commands the car to stop moving
     global c_f_stu,c_b_stu,c_l_stu,c_r_stu
     c_f_stu=0
     c_b_stu=0
-    tcpClicSock.send(('stop').encode())
+    sendCommand(('stop').encode())
 
 def call_stop_2(event):            #When this function is called,client commands the car go straight
     global c_l_stu,c_r_stu
     c_r_stu=0
     c_l_stu=0
-    tcpClicSock.send(('middle').encode())
+    sendCommand(('middle').encode())
 
 def click_call_Left(event):            #When this function is called,client commands the car to turn left
-    tcpClicSock.send(('Right').encode())
+    sendCommand(('Right').encode())
 
 def click_call_Right(event):           #When this function is called,client commands the car to turn right
-    tcpClicSock.send(('Left').encode())
+    sendCommand(('Left').encode())
 
 def call_Left(event):            #When this function is called,client commands the car to turn left
     global c_l_stu
     if c_l_stu == 0 :
-        tcpClicSock.send(('Right').encode())
+        sendCommand(('Right').encode())
         c_l_stu=1
 
 def call_Right(event):           #When this function is called,client commands the car to turn right
     global c_r_stu
     if c_r_stu == 0 :
-        tcpClicSock.send(('Left').encode())
+        sendCommand(('Left').encode())
         c_r_stu=1
 
 def call_look_left(event):               #Camera look left
-    tcpClicSock.send(('l_ri').encode())
+    sendCommand(('l_ri').encode())
 
 def call_look_right(event):              #Camera look right
-    tcpClicSock.send(('l_le').encode())
+    sendCommand(('l_le').encode())
 
 def call_look_up(event):                 #Camera look up
-    tcpClicSock.send(('l_do').encode())
+    sendCommand(('l_do').encode())
 
 def call_look_down(event):               #Camera look down
-    tcpClicSock.send(('l_up').encode())
+    sendCommand(('l_up').encode())
 
 def call_ahead(event):                   #Camera look ahead
-    tcpClicSock.send(('ahead').encode())
+    sendCommand(('ahead').encode())
     print('ahead')
 
 def call_auto(event):            #When this function is called,client commands the car to start auto mode
     if auto_status == 0:
-        tcpClicSock.send(('auto').encode())
+        sendCommand(('auto').encode())
     else:
-        tcpClicSock.send(('Stop').encode())
+        sendCommand(('Stop').encode())
 
 def call_exit(event):            #When this function is called,client commands the car to shut down
-    tcpClicSock.send(('exit').encode())
+    sendCommand(('exit').encode())
 
 def call_Stop(event):            #When this function is called,client commands the car to switch off auto mode
-    tcpClicSock.send(('Stop').encode())
+    sendCommand(('Stop').encode())
 
 def scan(event):                 #When this function is called,client commands the ultrasonic to scan
-    tcpClicSock.send(('scan_rev').encode())
+    sendCommand(('scan_rev').encode())
     print('scan')
 
 def find_line(event):            #Line follow mode
     if findline_status == 0:
-        tcpClicSock.send(('findline').encode())
+        sendCommand(('findline').encode())
     else:
-        tcpClicSock.send(('Stop').encode())
+        sendCommand(('Stop').encode())
 
 def replace_num(initial,new_num):   #Call this function to replace data in '.txt' file
     newline=""
@@ -179,21 +179,21 @@ def num_import(initial):            #Call this function to import data from '.tx
 
 def lights_ON(event):               #Turn on the LEDs
     if led_status == 0:
-        tcpClicSock.send(('lightsON').encode())
+        sendCommand(('lightsON').encode())
     else:
-        tcpClicSock.send(('lightsOFF').encode())
+        sendCommand(('lightsOFF').encode())
 
 def call_SR3():                     #Start speech recognition mode
     if speech_status == 0:
-        tcpClicSock.send(('voice_3').encode())
+        sendCommand(('voice_3').encode())
     else:
-        tcpClicSock.send(('Stop').encode())
+        sendCommand(('Stop').encode())
 
 def call_opencv():                  #Start OpenCV mode
     if opencv_status == 0:
-        tcpClicSock.send(('opencv').encode())
+        sendCommand(('opencv').encode())
     else:
-        tcpClicSock.send(('Stop').encode())
+        sendCommand(('Stop').encode())
 
 def voice_input():
     global a2t
@@ -221,24 +221,24 @@ def voice_command_thread():
             if SR_mode == 1:
                 l_VIN.config(text='%s'%v_command)
                 if 'forward' in v_command:
-                    tcpClicSock.send(('forward').encode())
+                    sendCommand(('forward').encode())
                 elif 'backward' in v_command:
-                    tcpClicSock.send(('backward').encode())
+                    sendCommand(('backward').encode())
                 elif 'left' in v_command:
-                    tcpClicSock.send(('Left').encode())
+                    sendCommand(('Left').encode())
                 elif 'right' in v_command:
-                    tcpClicSock.send(('Right').encode())
+                    sendCommand(('Right').encode())
                 elif 'stop' in v_command:
-                    tcpClicSock.send(('stop').encode())
-                    tcpClicSock.send(('Stop').encode())
+                    sendCommand(('stop').encode())
+                    sendCommand(('Stop').encode())
                 elif 'find line' in v_command:
-                    tcpClicSock.send(('findline').encode())
+                    sendCommand(('findline').encode())
                 elif 'follow' in v_command:
-                    tcpClicSock.send(('auto').encode())
+                    sendCommand(('auto').encode())
                 elif 'lights on' in v_command:
-                    tcpClicSock.send(('lightsON').encode())
+                    sendCommand(('lightsON').encode())
                 elif 'lights off' in v_command:
-                    tcpClicSock.send(('lightsOFF').encode())
+                    sendCommand(('lightsOFF').encode())
                 else:
                     pass
             else:
@@ -337,26 +337,26 @@ def loop():                       #GUI
         can_tex_13=can_scan.create_text((27,54),text='%sm'%round((x_range*0.75),2),fill='#aeea00')  #Create a text on canvas
 
         def spd_set():                 #Call this function for speed adjustment
-            tcpClicSock.send(('spdset:%s'%var_spd.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('spdset:%s'%var_spd.get()).encode())   #Get a speed value from IntVar and send it to the car
             l_ip_2.config(text='Speed:%s'%var_spd.get())             #Put the speed value on the speed status label
 
         def EC1_set(event):            #Call this function for speed adjustment
-            tcpClicSock.send(('EC1set:%s'%E_C1.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('EC1set:%s'%E_C1.get()).encode())   #Get a speed value from IntVar and send it to the car
 
         def EC2_set(event):            #Call this function for speed adjustment
-            tcpClicSock.send(('EC2set:%s'%E_C2.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('EC2set:%s'%E_C2.get()).encode())   #Get a speed value from IntVar and send it to the car
 
         def EM1_set(event):            #Call this function for speed adjustment
-            tcpClicSock.send(('EM1set:%s'%E_M1.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('EM1set:%s'%E_M1.get()).encode())   #Get a speed value from IntVar and send it to the car
 
         def EM2_set(event):            #Call this function for speed adjustment
-            tcpClicSock.send(('EM2set:%s'%E_M2.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('EM2set:%s'%E_M2.get()).encode())   #Get a speed value from IntVar and send it to the car
 
         def ET1_set(event):            #Call this function for speed adjustment
-            tcpClicSock.send(('LUMset:%s'%E_T1.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('LUMset:%s'%E_T1.get()).encode())   #Get a speed value from IntVar and send it to the car
 
         def ET2_set(event):            #Call this function for speed adjustment
-            tcpClicSock.send(('LDMset:%s'%E_T2.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('LDMset:%s'%E_T2.get()).encode())   #Get a speed value from IntVar and send it to the car
 
         def connect(event):       #Call this function to connect with the server
             if ip_stu == 1:
