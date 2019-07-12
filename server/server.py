@@ -480,13 +480,21 @@ def run():                   #Main loop
     scan_threading.setDaemon(True)                              #'True' means it is a front thread,it would close when the mainloop() closes
     scan_threading.start()                                      #Thread starts
 
-
+    recv_buffer = ''
     while True: 
         data = ''
-        data = tcpCliSock.recv(BUFSIZ).decode()
-        if not data:
+        # look for /n separators in the receive buffer
+        recv_buffer = recv_buffer + tcpCliSock.recv(BUFSIZ).decode()
+        if not '/n' in recv_buffer:
             continue
-        elif 'exit' in data:
+        commands = recv_buffer.split("/n")
+        data = commands[0]
+        commands.pop(0)  #remove command we are about to execute
+        separater = '/n'
+        recv_buffer = separater.join(commands)  # fix the receive buffer in an inefficeint way  :)
+        
+        # now process the first command.
+        if 'exit' in data:
             os.system("sudo shutdown -h now\n")
 
         elif 'spdset' in data:
