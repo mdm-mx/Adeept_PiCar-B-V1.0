@@ -556,7 +556,6 @@ def executeCommand(command, tcpCliSock):
                 led.setup()
                 led.both_off()
             colorWipe(strip, Color(0,0,0))
-            continue
         
         elif 'lightsON' in command:               #Turn on the LEDs
             led.both_on()
@@ -679,14 +678,12 @@ def executeCommand(command, tcpCliSock):
                 dis_scan = 0
             else:
                 pass
-            continue
 
         elif 'opencv' in command:                 #When server receive "auto" from client,start Auto Mode
             if auto_status == 0:
                 auto_status = 1
                 opencv_mode = 1                  
                 tcpCliSock.send('oncvon'.encode())
-            continue
 
         elif 'findline' in command:               #Find line mode start
             if auto_status == 0:
@@ -695,7 +692,6 @@ def executeCommand(command, tcpCliSock):
                 findline_mode = 1
             else:
                 pass
-            continue
 
         elif 'voice_3' in command:                #Speech recognition mode start
             if auto_status == 0:
@@ -704,7 +700,6 @@ def executeCommand(command, tcpCliSock):
                 tcpCliSock.send('voice_3'.encode())
             else:
                 pass
-            continue
 
 if __name__ == '__main__':
 
