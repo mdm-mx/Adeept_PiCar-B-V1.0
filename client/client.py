@@ -70,12 +70,12 @@ def command_cb(command):
         lights_ON(None)
     else:       
         print("TCP:" + command)
-        sendCommand((command).encode())
-        time.sleep(0.02)
+        sendCommand(command)
+        #time.sleep(0.02)
 
-def sendCommand(cmd):
-    cmdTerminated = cmd + '#'
-    sendCommand(cmdTerminated.encode())
+def sendCommand(command):
+    cmdTerminated = str(command) + "#"
+    tcpClicSock.send(cmdTerminated.encode())
 
 def video_show():
     while True:
@@ -95,76 +95,76 @@ def call_forward(event):         #When this function is called,client commands t
 def call_back(event):            #When this function is called,client commands the car to move backward
     global c_b_stu 
     if c_b_stu == 0:
-        sendCommand(('backward').encode())
+        sendCommand(('backward'))
         c_b_stu=1
 
 def call_stop(event):            #When this function is called,client commands the car to stop moving
     global c_f_stu,c_b_stu,c_l_stu,c_r_stu
     c_f_stu=0
     c_b_stu=0
-    sendCommand(('stop').encode())
+    sendCommand(('stop'))
 
 def call_stop_2(event):            #When this function is called,client commands the car go straight
     global c_l_stu,c_r_stu
     c_r_stu=0
     c_l_stu=0
-    sendCommand(('middle').encode())
+    sendCommand(('middle'))
 
 def click_call_Left(event):            #When this function is called,client commands the car to turn left
-    sendCommand(('Left').encode())
+    sendCommand(('Left'))
 
 def click_call_Right(event):           #When this function is called,client commands the car to turn right
-    sendCommand(('Right').encode())
+    sendCommand(('Right'))
 
 def call_Left(event):            #When this function is called,client commands the car to turn left
     global c_l_stu
     if c_l_stu == 0 :
-        sendCommand(('Left').encode())
+        sendCommand(('Left'))
         c_l_stu=1
 
 def call_Right(event):           #When this function is called,client commands the car to turn right
     global c_r_stu
     if c_r_stu == 0 :
-        sendCommand(('Right').encode())
+        sendCommand(('Right'))
         c_r_stu=1
 
 def call_look_left(event):               #Camera look left
-    sendCommand(('l_le').encode())
+    sendCommand(('l_le'))
 
 def call_look_right(event):              #Camera look right
-    sendCommand(('l_ri').encode())
+    sendCommand(('l_ri'))
 
 def call_look_up(event):                 #Camera look up
-    sendCommand(('l_up').encode())
+    sendCommand(('l_up'))
 
 def call_look_down(event):               #Camera look down
-    sendCommand(('l_do').encode())
+    sendCommand(('l_do'))
 
 def call_ahead(event):                   #Camera look ahead
-    sendCommand(('ahead').encode())
+    sendCommand(('ahead'))
     print('ahead')
 
 def call_auto(event):            #When this function is called,client commands the car to start auto mode
     if auto_status == 0:
-        sendCommand(('auto').encode())
+        sendCommand(('auto'))
     else:
-        sendCommand(('Stop').encode())
+        sendCommand(('Stop'))
 
 def call_exit(event):            #When this function is called,client commands the car to shut down
-    sendCommand(('exit').encode())
+    sendCommand(('exit'))
 
 def call_Stop(event):            #When this function is called,client commands the car to switch off auto mode
-    sendCommand(('Stop').encode())
+    sendCommand(('Stop'))
 
 def scan(event):                 #When this function is called,client commands the ultrasonic to scan
-    sendCommand(('scan').encode())
+    sendCommand(('scan'))
     print('scan')
 
 def find_line(event):            #Line follow mode
     if findline_status == 0:
-        sendCommand(('findline').encode())
+        sendCommand(('findline'))
     else:
-        sendCommand(('Stop').encode())
+        sendCommand(('Stop'))
 
 def replace_num(initial,new_num):   #Call this function to replace data in '.txt' file
     newline=""
@@ -189,21 +189,21 @@ def num_import(initial):            #Call this function to import data from '.tx
 
 def lights_ON(event):               #Turn on the LEDs
     if led_status == 0:
-        sendCommand(('lightsON').encode())
+        sendCommand(('lightsON'))
     else:
-        sendCommand(('lightsOFF').encode())
+        sendCommand(('lightsOFF'))
 
 def call_SR3():                     #Start speech recognition mode
     if speech_status == 0:
-        sendCommand(('voice_3').encode())
+        sendCommand(('voice_3'))
     else:
-        sendCommand(('Stop').encode())
+        sendCommand(('Stop'))
 
 def call_opencv():                  #Start OpenCV mode
     if opencv_status == 0:
-        sendCommand(('opencv').encode())
+        sendCommand(('opencv'))
     else:
-        sendCommand(('Stop').encode())
+        sendCommand(('Stop'))
 
 def voice_input():
     global a2t
@@ -231,24 +231,24 @@ def voice_command_thread():
             if SR_mode == 1:
                 l_VIN.config(text='%s'%v_command)
                 if 'forward' in v_command:
-                    sendCommand(('forward').encode())
+                    sendCommand(('forward'))
                 elif 'backward' in v_command:
-                    sendCommand(('backward').encode())
+                    sendCommand(('backward'))
                 elif 'left' in v_command:
-                    sendCommand(('Left').encode())
+                    sendCommand(('Left'))
                 elif 'right' in v_command:
-                    sendCommand(('Right').encode())
+                    sendCommand(('Right'))
                 elif 'stop' in v_command:
-                    sendCommand(('stop').encode())
-                    sendCommand(('Stop').encode())
+                    sendCommand(('stop'))
+                    sendCommand(('Stop'))
                 elif 'find line' in v_command:
-                    sendCommand(('findline').encode())
+                    sendCommand(('findline'))
                 elif 'follow' in v_command:
-                    sendCommand(('auto').encode())
+                    sendCommand(('auto'))
                 elif 'lights on' in v_command:
-                    sendCommand(('lightsON').encode())
+                    sendCommand(('lightsON'))
                 elif 'lights off' in v_command:
-                    sendCommand(('lightsOFF').encode())
+                    sendCommand(('lightsOFF'))
                 else:
                     pass
             else:
@@ -349,26 +349,26 @@ def loop():                       #GUI
         can_tex_13=can_scan.create_text((27,54),text='%sm'%round((x_range*0.75),2),fill='#aeea00')  #Create a text on canvas
 
         def spd_set():                 #Call this function for speed adjustment
-            sendCommand(('spdset:%s'%var_spd.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('spdset:%s'%var_spd.get()))   #Get a speed value from IntVar and send it to the car
             l_ip_2.config(text='Speed:%s'%var_spd.get())             #Put the speed value on the speed status label
 
         def EC1_set(event):            #Call this function for speed adjustment
-            sendCommand(('EC1set:%s'%E_C1.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('EC1set:%s'%E_C1.get()))   #Get a speed value from IntVar and send it to the car
 
         def EC2_set(event):            #Call this function for speed adjustment
-            sendCommand(('EC2set:%s'%E_C2.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('EC2set:%s'%E_C2.get()))   #Get a speed value from IntVar and send it to the car
 
         def EM1_set(event):            #Call this function for speed adjustment
-            sendCommand(('EM1set:%s'%E_M1.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('EM1set:%s'%E_M1.get()))   #Get a speed value from IntVar and send it to the car
 
         def EM2_set(event):            #Call this function for speed adjustment
-            sendCommand(('EM2set:%s'%E_M2.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('EM2set:%s'%E_M2.get()))   #Get a speed value from IntVar and send it to the car
 
         def ET1_set(event):            #Call this function for speed adjustment
-            sendCommand(('LUMset:%s'%E_T1.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('LUMset:%s'%E_T1.get()))   #Get a speed value from IntVar and send it to the car
 
         def ET2_set(event):            #Call this function for speed adjustment
-            sendCommand(('LDMset:%s'%E_T2.get()).encode())   #Get a speed value from IntVar and send it to the car
+            sendCommand(('LDMset:%s'%E_T2.get()))   #Get a speed value from IntVar and send it to the car
 
         def connect(event):       #Call this function to connect with the server
             print("Calling connect()")
