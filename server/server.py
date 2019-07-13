@@ -697,7 +697,7 @@ def run():                   #Main loop
                     speech_mode = 1
                     tcpCliSock.send('voice_3'.encode())
                 else:
-                    pass`
+                    pass
 
 if __name__ == '__main__':
 
