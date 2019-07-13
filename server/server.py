@@ -618,6 +618,7 @@ def run():                   #Main loop
                     print("Error in motor_set")    
 
             elif 'pwm_set' in command:
+                print("pwm_set debug:" + command)
                 tcpCliSock.send('1'.encode())
                 parts = str.split(data,":")
                 channel = parts[1]
