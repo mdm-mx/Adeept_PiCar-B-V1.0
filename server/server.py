@@ -610,7 +610,7 @@ def run():                   #Main loop
                 try:
                     tcpCliSock.send('1'.encode())
                     # e.g motor_set:50, motor_set:-50
-                    parts = str.split(data,":")
+                    parts = str.split(command,":")
                     deflection = parts[1]
                     motor.motor_set(deflection)
                     print("motor_set:" + str(deflection))
@@ -618,9 +618,8 @@ def run():                   #Main loop
                     print("Error in motor_set")    
 
             elif 'pwm_set' in command:
-                print("pwm_set debug:" + command)
                 tcpCliSock.send('1'.encode())
-                parts = str.split(data,":")
+                parts = str.split(command,":")
                 channel = parts[1]
                 deflection = parts[2]
                 turn.set_pwm(channel, deflection)   
