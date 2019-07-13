@@ -487,6 +487,7 @@ def run():                   #Main loop
         # look for separators in the receive buffer
         recv_buffer = recv_buffer + tcpCliSock.recv(BUFSIZ).decode()
         while separater in recv_buffer:
+            print(recv_buffer)
             commands = recv_buffer.split(separater)
             command = commands[0]
             commands.pop(0)  #remove command we are about to execute
