@@ -71,7 +71,7 @@ def command_cb(command):
     else:       
         print("TCP:" + command)
         sendCommand(command)
-        time.sleep(0.02)
+        #time.sleep(0.02)
 
 def sendCommand(command):
     cmdTerminated = str(command) + "#"
