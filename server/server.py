@@ -490,216 +490,214 @@ def run():                   #Main loop
             commands = recv_buffer.split(separater)
             command = commands[0]
             commands.pop(0)  #remove command we are about to execute
-            executeCommand(command, tcpCliSock)
             recv_buffer = separater.join(commands)  # put the receive buffer back together in an inefficeint way  :)
 
+            # Execute command
+            if 'exit' in command:
+                os.system("sudo shutdown -h now\n")
 
-def executeCommand(command, tcpCliSock):
-        if 'exit' in command:
-            os.system("sudo shutdown -h now\n")
+            elif 'spdset' in command:
+                global spd_ad
+                spd_ad=float((str(command))[7:])      #Speed Adjustment
 
-        elif 'spdset' in command:
-            global spd_ad
-            spd_ad=float((str(command))[7:])      #Speed Adjustment
+            elif 'scan' in command:
+                dis_can=scan()                     #Start Scanning
+                str_list_1=dis_can                 #Divide the list to make it samller to send 
+                str_index=' '                      #Separate the values by space
+                str_send_1=str_index.join(str_list_1)+' '
+                tcpCliSock.sendall((str(str_send_1)).encode())   #Send Data
+                tcpCliSock.send('finished'.encode())        #Sending 'finished' tell the client to stop receiving the list of dis_can
+                print("scan")
+            elif 'scan_rev' in command:
+                dis_can=scan_rev()                     #Start Scanning
+                str_list_1=dis_can                 #Divide the list to make it samller to send 
+                str_index=' '                      #Separate the values by space
+                str_send_1=str_index.join(str_list_1)+' '
+                tcpCliSock.sendall((str(str_send_1)).encode())   #Send Data
+                tcpCliSock.send('finished'.encode())        #Sending 'finished' tell the client to stop receiving the list of dis_can
 
-        elif 'scan' in command:
-            dis_can=scan()                     #Start Scanning
-            str_list_1=dis_can                 #Divide the list to make it samller to send 
-            str_index=' '                      #Separate the values by space
-            str_send_1=str_index.join(str_list_1)+' '
-            tcpCliSock.sendall((str(str_send_1)).encode())   #Send Data
-            tcpCliSock.send('finished'.encode())        #Sending 'finished' tell the client to stop receiving the list of dis_can
-            print("scan")
-        elif 'scan_rev' in command:
-            dis_can=scan_rev()                     #Start Scanning
-            str_list_1=dis_can                 #Divide the list to make it samller to send 
-            str_index=' '                      #Separate the values by space
-            str_send_1=str_index.join(str_list_1)+' '
-            tcpCliSock.sendall((str(str_send_1)).encode())   #Send Data
-            tcpCliSock.send('finished'.encode())        #Sending 'finished' tell the client to stop receiving the list of dis_can
+            elif 'EC1set' in command:                 #Camera Adjustment
+                new_EC1=int((str(data))[7:])
+                turn.camera_turn(new_EC1)
+                replace_num('E_C1:',new_EC1)
 
-        elif 'EC1set' in command:                 #Camera Adjustment
-            new_EC1=int((str(data))[7:])
-            turn.camera_turn(new_EC1)
-            replace_num('E_C1:',new_EC1)
+            elif 'EC2set' in command:                 #Ultrasonic Adjustment
+                new_EC2=int((str(data))[7:])
+                replace_num('E_C2:',new_EC2)
+                turn.ultra_turn(new_EC2)
 
-        elif 'EC2set' in command:                 #Ultrasonic Adjustment
-            new_EC2=int((str(data))[7:])
-            replace_num('E_C2:',new_EC2)
-            turn.ultra_turn(new_EC2)
+            elif 'EM1set' in command:                 #Motor A Speed Adjustment
+                new_EM1=int((str(data))[7:])
+                replace_num('E_M1:',new_EM1)
 
-        elif 'EM1set' in command:                 #Motor A Speed Adjustment
-            new_EM1=int((str(data))[7:])
-            replace_num('E_M1:',new_EM1)
+            elif 'EM2set' in command:                 #Motor B Speed Adjustment
+                new_EM2=int((str(data))[7:])
+                replace_num('E_M2:',new_EM2)
 
-        elif 'EM2set' in command:                 #Motor B Speed Adjustment
-            new_EM2=int((str(data))[7:])
-            replace_num('E_M2:',new_EM2)
+            elif 'LUMset' in command:                 #Motor A Turningf Speed Adjustment
+                new_ET1=int((str(data))[7:])
+                replace_num('look_up_max:',new_ET1)
+                turn.camera_turn(new_ET1)
 
-        elif 'LUMset' in command:                 #Motor A Turningf Speed Adjustment
-            new_ET1=int((str(data))[7:])
-            replace_num('look_up_max:',new_ET1)
-            turn.camera_turn(new_ET1)
+            elif 'LDMset' in command:                 #Motor B Turningf Speed Adjustment
+                new_ET2=int((str(data))[7:])
+                replace_num('look_down_max:',new_ET2)
+                turn.camera_turn(new_ET2)
 
-        elif 'LDMset' in command:                 #Motor B Turningf Speed Adjustment
-            new_ET2=int((str(data))[7:])
-            replace_num('look_down_max:',new_ET2)
-            turn.camera_turn(new_ET2)
+            elif 'stop' in command:                   #When server receive "stop" from client,car stops moving
+                print(data)
+                tcpCliSock.send('9'.encode())
+                setup()
+                motor.motorStop()
+                setup()
+                if led_status == 0:
+                    led.setup()
+                    led.both_off()
+                colorWipe(strip, Color(0,0,0))
+            
+            elif 'lightsON' in command:               #Turn on the LEDs
+                led.both_on()
+                led_status=1
+                tcpCliSock.send('lightsON'.encode())
 
-        elif 'stop' in command:                   #When server receive "stop" from client,car stops moving
-            print(data)
-            tcpCliSock.send('9'.encode())
-            setup()
-            motor.motorStop()
-            setup()
-            if led_status == 0:
-                led.setup()
+            elif 'lightsOFF'in command:               #Turn off the LEDs
                 led.both_off()
-            colorWipe(strip, Color(0,0,0))
-        
-        elif 'lightsON' in command:               #Turn on the LEDs
-            led.both_on()
-            led_status=1
-            tcpCliSock.send('lightsON'.encode())
+                led_status=0
+                tcpCliSock.send('lightsOFF'.encode())
 
-        elif 'lightsOFF'in command:               #Turn off the LEDs
-            led.both_off()
-            led_status=0
-            tcpCliSock.send('lightsOFF'.encode())
+            elif 'middle' in command:                 #Go straight
+                if led_status == 0:
+                    led.side_color_off(left_R,left_G)
+                    led.side_color_off(right_R,right_G)
+                else:
+                    led.side_on(left_B)
+                    led.side_on(right_B)
+                turn_status = 0
+                turn.middle()
+            
+            elif 'Left' in command:                   #Turn left
+                if led_status == 0:
+                    led.side_color_on(left_R,left_G)
+                else:
+                    led.side_off(left_B)
+                turn.left()
+                turn_status=1
+                tcpCliSock.send('3'.encode())
+            
+            elif 'Right' in command:                  #Turn right
+                if led_status == 0:
+                    led.side_color_on(right_R,right_G)
+                else:
+                    led.side_off(right_B)
+                turn.right()
+                turn_status=2
+                tcpCliSock.send('4'.encode())
+            
+            elif 'backward' in command:               #When server receive "backward" from client,car moves backward
+                tcpCliSock.send('2'.encode())
+                motor.motor_left(status, backward, left_spd*spd_ad)
+                motor.motor_right(status, forward, right_spd*spd_ad)
+                colorWipe(strip, Color(255,0,0))
 
-        elif 'middle' in command:                 #Go straight
-            if led_status == 0:
-                led.side_color_off(left_R,left_G)
-                led.side_color_off(right_R,right_G)
-            else:
-                led.side_on(left_B)
-                led.side_on(right_B)
-            turn_status = 0
-            turn.middle()
-        
-        elif 'Left' in command:                   #Turn left
-            if led_status == 0:
-                led.side_color_on(left_R,left_G)
-            else:
-                led.side_off(left_B)
-            turn.left()
-            turn_status=1
-            tcpCliSock.send('3'.encode())
-        
-        elif 'Right' in command:                  #Turn right
-            if led_status == 0:
-                led.side_color_on(right_R,right_G)
-            else:
-                led.side_off(right_B)
-            turn.right()
-            turn_status=2
-            tcpCliSock.send('4'.encode())
-        
-        elif 'backward' in command:               #When server receive "backward" from client,car moves backward
-            tcpCliSock.send('2'.encode())
-            motor.motor_left(status, backward, left_spd*spd_ad)
-            motor.motor_right(status, forward, right_spd*spd_ad)
-            colorWipe(strip, Color(255,0,0))
-
-        elif 'forward' in command:                #When server receive "forward" from client,car moves forward
-            tcpCliSock.send('1'.encode())
-            motor.motor_left(status, forward,left_spd*spd_ad)
-            motor.motor_right(status,backward,right_spd*spd_ad)
-            colorWipe(strip, Color(0,0,255))
-
-        elif 'motor_set' in command:
-            try:
+            elif 'forward' in command:                #When server receive "forward" from client,car moves forward
                 tcpCliSock.send('1'.encode())
-                # e.g motor_set:50, motor_set:-50
+                motor.motor_left(status, forward,left_spd*spd_ad)
+                motor.motor_right(status,backward,right_spd*spd_ad)
+                colorWipe(strip, Color(0,0,255))
+
+            elif 'motor_set' in command:
+                try:
+                    tcpCliSock.send('1'.encode())
+                    # e.g motor_set:50, motor_set:-50
+                    parts = str.split(data,":")
+                    deflection = parts[1]
+                    motor.motor_set(deflection)
+                    print("motor_set:" + str(deflection))
+                except:
+                    print("Error in motor_set")    
+
+            elif 'pwm_set' in command:
+                tcpCliSock.send('1'.encode())
                 parts = str.split(data,":")
-                deflection = parts[1]
-                motor.motor_set(deflection)
-                print("motor_set:" + str(deflection))
-            except:
-                print("Error in motor_set")    
+                channel = parts[1]
+                deflection = parts[2]
+                turn.set_pwm(channel, deflection)   
+                print("pwm_set:" + str(channel) + ":" + str(deflection))
 
-        elif 'pwm_set' in command:
-            tcpCliSock.send('1'.encode())
-            parts = str.split(data,":")
-            channel = parts[1]
-            deflection = parts[2]
-            turn.set_pwm(channel, deflection)   
-            print("pwm_set:" + str(channel) + ":" + str(deflection))
+            elif 'l_up' in command:                   #Camera look up
+                if vtr_mid< look_up_max:
+                    vtr_mid+=turn_speed
+                turn.camera_turn(vtr_mid)
+                tcpCliSock.send('5'.encode())
 
-        elif 'l_up' in command:                   #Camera look up
-            if vtr_mid< look_up_max:
-                vtr_mid+=turn_speed
-            turn.camera_turn(vtr_mid)
-            tcpCliSock.send('5'.encode())
+            elif 'l_do' in command:                   #Camera look down
+                if vtr_mid> look_down_max:
+                    vtr_mid-=turn_speed
+                turn.camera_turn(vtr_mid)
+                print(vtr_mid)
+                tcpCliSock.send('6'.encode())
 
-        elif 'l_do' in command:                   #Camera look down
-            if vtr_mid> look_down_max:
-                vtr_mid-=turn_speed
-            turn.camera_turn(vtr_mid)
-            print(vtr_mid)
-            tcpCliSock.send('6'.encode())
+            elif 'l_le' in command:                   #Camera look left
+                if hoz_mid< look_left_max:
+                    hoz_mid+=turn_speed
+                turn.ultra_turn(hoz_mid)
+                tcpCliSock.send('7'.encode())
 
-        elif 'l_le' in command:                   #Camera look left
-            if hoz_mid< look_left_max:
-                hoz_mid+=turn_speed
-            turn.ultra_turn(hoz_mid)
-            tcpCliSock.send('7'.encode())
+            elif 'l_ri' in command:                   #Camera look right
+                if hoz_mid> look_right_max:
+                    hoz_mid-=turn_speed
+                turn.ultra_turn(hoz_mid)
+                tcpCliSock.send('8'.encode())
 
-        elif 'l_ri' in command:                   #Camera look right
-            if hoz_mid> look_right_max:
-                hoz_mid-=turn_speed
-            turn.ultra_turn(hoz_mid)
-            tcpCliSock.send('8'.encode())
+            elif 'ahead' in command:                  #Camera look ahead
+                turn.ahead()
 
-        elif 'ahead' in command:                  #Camera look ahead
-            turn.ahead()
+            elif 'Stop' in command:                   #When server receive "Stop" from client,Auto Mode switches off
+                opencv_mode   = 0
+                findline_mode = 0
+                speech_mode   = 0
+                auto_mode     = 0
+                auto_status   = 0
+                dis_scan = 1
+                tcpCliSock.send('auto_status_off'.encode())
+                motor.motorStop()
+                led.both_off()
+                turn.middle()
+                time.sleep(0.1)
+                motor.motorStop()
+                led.both_off()
+                turn.middle()
+                print(data)
+            elif 'auto' in command:                   #When server receive "auto" from client,start Auto Mode
+                if auto_status == 0:
+                    tcpCliSock.send('0'.encode())
+                    auto_status = 1
+                    auto_mode = 1
+                    dis_scan = 0
+                else:
+                    pass
 
-        elif 'Stop' in command:                   #When server receive "Stop" from client,Auto Mode switches off
-            opencv_mode   = 0
-            findline_mode = 0
-            speech_mode   = 0
-            auto_mode     = 0
-            auto_status   = 0
-            dis_scan = 1
-            tcpCliSock.send('auto_status_off'.encode())
-            motor.motorStop()
-            led.both_off()
-            turn.middle()
-            time.sleep(0.1)
-            motor.motorStop()
-            led.both_off()
-            turn.middle()
-            print(data)
-        elif 'auto' in command:                   #When server receive "auto" from client,start Auto Mode
-            if auto_status == 0:
-                tcpCliSock.send('0'.encode())
-                auto_status = 1
-                auto_mode = 1
-                dis_scan = 0
-            else:
-                pass
+            elif 'opencv' in command:                 #When server receive "auto" from client,start Auto Mode
+                if auto_status == 0:
+                    auto_status = 1
+                    opencv_mode = 1                  
+                    tcpCliSock.send('oncvon'.encode())
 
-        elif 'opencv' in command:                 #When server receive "auto" from client,start Auto Mode
-            if auto_status == 0:
-                auto_status = 1
-                opencv_mode = 1                  
-                tcpCliSock.send('oncvon'.encode())
+            elif 'findline' in command:               #Find line mode start
+                if auto_status == 0:
+                    tcpCliSock.send('findline'.encode())
+                    auto_status = 1
+                    findline_mode = 1
+                else:
+                    pass
 
-        elif 'findline' in command:               #Find line mode start
-            if auto_status == 0:
-                tcpCliSock.send('findline'.encode())
-                auto_status = 1
-                findline_mode = 1
-            else:
-                pass
-
-        elif 'voice_3' in command:                #Speech recognition mode start
-            if auto_status == 0:
-                auto_status = 1
-                speech_mode = 1
-                tcpCliSock.send('voice_3'.encode())
-            else:
-                pass
+            elif 'voice_3' in command:                #Speech recognition mode start
+                if auto_status == 0:
+                    auto_status = 1
+                    speech_mode = 1
+                    tcpCliSock.send('voice_3'.encode())
+                else:
+                    pass`
 
 if __name__ == '__main__':
 
